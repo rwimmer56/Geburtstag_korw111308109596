@@ -1,6 +1,6 @@
 {
-  "name": "Kärtchen zum 30er",
-  "short_name": "30er",
+  "name": "Kärtchen zum Geburtstag",
+  "short_name": "Kärtchen",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
