@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#ffffff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ein Monat">
+<title>Ein Monat mit dir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Karla:wght@400;500;700&display=swap">
+<script>if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("../sw.js").catch(function(){})});}</script>
+<style>
+:root{
+  --paper:#ffffff;
+  --ink:#181e24;
+  --muted:#6b7580;
+  --line:#e5e8ec;
+  --accent:#22627f;
+  --font-display:"Instrument Serif",Georgia,"Times New Roman",serif;
+  --font-body:"Karla",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color-scheme:light;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html,body{margin:0}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--font-body);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+.wrap{max-width:52rem;margin:0 auto;padding-block:2.2rem 3.5rem;padding-left:1.1rem;padding-right:1.1rem}
+
+h1{font-family:var(--font-display);font-weight:400;font-size:clamp(2.4rem,11vw,3.4rem);
+  line-height:1.05;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.lede{color:var(--muted);margin:.7rem 0 0;max-width:30rem;font-size:1rem}
+
+.hero{margin-top:1.6rem;position:relative;cursor:zoom-in}
+.hero img{width:100%;height:auto;border-radius:3px;background:#f2f4f6}
+.hero .cap{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+  font-weight:700;margin-top:.6rem}
+
+.grid{margin-top:2rem;columns:2;column-gap:.6rem}
+@media (min-width:640px){.grid{columns:3;column-gap:.7rem}}
+.cell{break-inside:avoid;margin-bottom:.6rem;position:relative;cursor:zoom-in}
+.cell img{width:100%;height:auto;border-radius:3px;background:#f2f4f6}
+.cell .d{position:absolute;left:.45rem;bottom:.45rem;font-size:.64rem;letter-spacing:.08em;
+  text-transform:uppercase;font-weight:700;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.6);opacity:.9}
+
+.again{display:block;margin:2.4rem auto 0;font:inherit;font-size:.88rem;font-weight:500;
+  background:transparent;border:1px solid var(--line);color:var(--muted);
+  border-radius:99px;padding:.6rem 1.3rem;cursor:pointer;min-height:2.6rem;touch-action:manipulation}
+.again:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+footer{margin-top:2.6rem;border-top:1px solid var(--line);padding-top:1.2rem;
+  color:var(--muted);font-size:.85rem}
+footer p{margin:0}
+
+#lb{position:fixed;inset:0;background:rgba(14,18,22,.97);display:none;z-index:50;
+  align-items:center;justify-content:center;padding:env(safe-area-inset-top,0px) .5rem env(safe-area-inset-bottom,0px);
+  cursor:zoom-out}
+#lb.on{display:flex}
+#lb img{max-width:100%;max-height:88vh;width:auto;border-radius:2px}
+#lbd{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + .9rem);left:0;right:0;text-align:center;
+  color:#e8edf2;font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;opacity:.75}
+.nav{position:absolute;top:50%;transform:translateY(-50%);background:none;border:0;color:#fff;
+  font-size:2rem;opacity:.55;cursor:pointer;padding:1rem .8rem;line-height:1}
+.nav:hover{opacity:1}
+#prev{left:0}#next{right:0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Ein Monat mit dir</h1>
+    <p class="lede">September und Oktober 2026. Die Bilder mischen sich bei jedem Aufruf neu.</p>
+  </header>
+
+  <div class="hero" id="hero">
+    <img id="heroimg" alt="">
+    <p class="cap" id="herocap"></p>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <button class="again" id="again" type="button">Neu mischen</button>
+
+  <footer>
+    <p id="count"></p>
+  </footer>
+</div>
+
+<div id="lb">
+  <button class="nav" id="prev" type="button" aria-label="Zurück">&#8249;</button>
+  <img id="lbimg" alt="">
+  <button class="nav" id="next" type="button" aria-label="Weiter">&#8250;</button>
+  <div id="lbd"></div>
+</div>
+
+<script>
+var PHOTOS = [];
+var order = [];
+var lbIndex = 0;
+
+function shuffle(a){
+  var r = a.slice();
+  for (var i = r.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = r[i]; r[i] = r[j]; r[j] = t;
+  }
+  return r;
+}
+
+function ratioBox(el, p){
+  el.style.aspectRatio = p.w + " / " + p.h;
+}
+
+function render(){
+  order = shuffle(PHOTOS);
+  var hero = order[0];
+  var hi = document.getElementById("heroimg");
+  hi.src = "img/" + hero.f;
+  hi.alt = "Foto vom " + hero.d;
+  ratioBox(hi, hero);
+  document.getElementById("herocap").textContent = hero.d;
+
+  var grid = document.getElementById("grid");
+  grid.textContent = "";
+  for (var i = 1; i < order.length; i++) {
+    (function(p, idx){
+      var cell = document.createElement("div");
+      cell.className = "cell";
+      var img = document.createElement("img");
+      img.src = "thumb/" + p.f;
+      img.loading = "lazy";
+      img.decoding = "async";
+      img.alt = "Foto vom " + p.d;
+      ratioBox(img, p);
+      var d = document.createElement("span");
+      d.className = "d";
+      d.textContent = p.d;
+      cell.appendChild(img);
+      cell.appendChild(d);
+      cell.addEventListener("click", function(){ openLb(idx); });
+      grid.appendChild(cell);
+    })(order[i], i);
+  }
+  document.getElementById("count").textContent = order.length + " Bilder, vom 24. September bis 22. Oktober.";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+var lb = document.getElementById("lb");
+var lbimg = document.getElementById("lbimg");
+var lbd = document.getElementById("lbd");
+
+function openLb(i){
+  lbIndex = (i + order.length) % order.length;
+  var p = order[lbIndex];
+  lbimg.src = "img/" + p.f;
+  lbimg.alt = "Foto vom " + p.d;
+  lbd.textContent = p.d;
+  lb.classList.add("on");
+}
+function closeLb(){ lb.classList.remove("on"); }
+
+document.getElementById("hero").addEventListener("click", function(){ openLb(0); });
+lb.addEventListener("click", function(e){
+  if (e.target === lb || e.target === lbimg || e.target === lbd) closeLb();
+});
+document.getElementById("prev").addEventListener("click", function(e){ e.stopPropagation(); openLb(lbIndex - 1); });
+document.getElementById("next").addEventListener("click", function(e){ e.stopPropagation(); openLb(lbIndex + 1); });
+document.addEventListener("keydown", function(e){
+  if (!lb.classList.contains("on")) return;
+  if (e.key === "Escape") closeLb();
+  if (e.key === "ArrowLeft") openLb(lbIndex - 1);
+  if (e.key === "ArrowRight") openLb(lbIndex + 1);
+});
+
+var tx = 0;
+lb.addEventListener("touchstart", function(e){ tx = e.changedTouches[0].clientX; }, { passive: true });
+lb.addEventListener("touchend", function(e){
+  var dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 50) { openLb(lbIndex + (dx < 0 ? 1 : -1)); }
+}, { passive: true });
+
+document.getElementById("again").addEventListener("click", render);
+
+fetch("photos.json").then(function(r){ return r.json(); }).then(function(d){
+  PHOTOS = d;
+  render();
+}).catch(function(){
+  document.getElementById("count").textContent = "Die Bilder konnten nicht geladen werden.";
+});
+</script>
+</body>
+</html>
