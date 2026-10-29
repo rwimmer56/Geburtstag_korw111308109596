@@ -137,13 +137,25 @@ function ratioBox(el, p){
   el.style.aspectRatio = p.w + " / " + p.h;
 }
 
+function setSrc(img, src){
+  img.dataset.tries = "0";
+  img.onerror = function(){
+    var n = parseInt(img.dataset.tries || "0", 10);
+    if (n < 2) {
+      img.dataset.tries = String(n + 1);
+      window.setTimeout(function(){ img.src = src + "?r=" + Date.now(); }, 400 * (n + 1));
+    }
+  };
+  img.src = src;
+}
+
 function render(){
   order = shuffle(PHOTOS).slice(0, Math.min(SHOW, PHOTOS.length));
   var hero = order[0];
   var hi = document.getElementById("heroimg");
-  hi.src = "img/" + hero.f;
   hi.alt = "Foto vom " + hero.d;
   ratioBox(hi, hero);
+  setSrc(hi, "img/" + hero.f);
   document.getElementById("herocap").textContent = hero.d;
 
   var grid = document.getElementById("grid");
@@ -153,11 +165,11 @@ function render(){
       var cell = document.createElement("div");
       cell.className = "cell";
       var img = document.createElement("img");
-      img.src = "thumb/" + p.f;
       img.loading = "lazy";
       img.decoding = "async";
       img.alt = "Foto vom " + p.d;
       ratioBox(img, p);
+      setSrc(img, "thumb/" + p.f);
       var d = document.createElement("span");
       d.className = "d";
       d.textContent = p.d;
@@ -181,8 +193,8 @@ var lbn = document.getElementById("lbn");
 function show(i){
   lbIndex = (i % order.length + order.length) % order.length;
   var p = order[lbIndex];
-  lbimg.src = "img/" + p.f;
   lbimg.alt = "Foto vom " + p.d;
+  setSrc(lbimg, "img/" + p.f);
   lbd.textContent = p.d;
   lbn.textContent = (lbIndex + 1) + " / " + order.length;
   preload(lbIndex + 1);
