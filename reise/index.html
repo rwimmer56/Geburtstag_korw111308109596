@@ -53,8 +53,9 @@ h1{font-family:var(--font-display);font-weight:400;font-size:clamp(2.4rem,11vw,3
 @media (min-width:640px){.grid{columns:3;column-gap:.7rem}}
 .cell{break-inside:avoid;margin-bottom:.6rem;position:relative;cursor:zoom-in}
 .cell img{width:100%;height:auto;border-radius:3px;background:#f2f4f6}
-.cell .d{position:absolute;left:.45rem;bottom:.45rem;font-size:.64rem;letter-spacing:.08em;
-  text-transform:uppercase;font-weight:700;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.6);opacity:.9}
+.cell .d{position:absolute;left:.45rem;right:.45rem;bottom:.45rem;font-size:.62rem;letter-spacing:.06em;
+  text-transform:uppercase;font-weight:700;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.7);opacity:.92;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 .again{display:block;margin:2.4rem auto 0;font:inherit;font-size:.88rem;font-weight:500;
   background:transparent;border:1px solid var(--line);color:var(--muted);
@@ -172,7 +173,7 @@ function render(){
       setSrc(img, "thumb/" + p.f);
       var d = document.createElement("span");
       d.className = "d";
-      d.textContent = p.d;
+      d.textContent = p.s || p.d;
       cell.appendChild(img);
       cell.appendChild(d);
       cell.addEventListener("click", function(){ openLb(idx); });
