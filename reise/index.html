@@ -83,7 +83,7 @@ footer p{margin:0}
 <div class="wrap">
   <header>
     <h1>Ein Monat mit dir</h1>
-    <p class="lede">September und Oktober 2026. Die Bilder mischen sich bei jedem Aufruf neu.</p>
+    <p class="lede">September und Oktober 2026. Jeder Aufruf zeigt vierzig andere Bilder.</p>
   </header>
 
   <div class="hero" id="hero">
@@ -93,7 +93,7 @@ footer p{margin:0}
 
   <div class="grid" id="grid"></div>
 
-  <button class="again" id="again" type="button">Neu mischen</button>
+  <button class="again" id="again" type="button">Vierzig andere zeigen</button>
 
   <footer>
     <p id="count"></p>
@@ -111,6 +111,7 @@ footer p{margin:0}
 var PHOTOS = [];
 var order = [];
 var lbIndex = 0;
+var SHOW = 40;
 
 function shuffle(a){
   var r = a.slice();
@@ -126,7 +127,7 @@ function ratioBox(el, p){
 }
 
 function render(){
-  order = shuffle(PHOTOS);
+  order = shuffle(PHOTOS).slice(0, Math.min(SHOW, PHOTOS.length));
   var hero = order[0];
   var hi = document.getElementById("heroimg");
   hi.src = "img/" + hero.f;
@@ -155,7 +156,8 @@ function render(){
       grid.appendChild(cell);
     })(order[i], i);
   }
-  document.getElementById("count").textContent = order.length + " Bilder, vom 24. September bis 22. Oktober.";
+  document.getElementById("count").textContent =
+    order.length + " von " + PHOTOS.length + " Bildern, vom 24. September bis 22. Oktober. Neu laden zeigt andere.";
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
